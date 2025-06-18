@@ -1,499 +1,852 @@
-// Admin Panel JavaScript
+// Admin Panel JavaScript Functions
 
+// Global variables
 let currentSection = 'dashboard';
+let bookingsData = [];
+let contactsData = [];
+let servicesData = [];
+let doctorsData = [];
+let blogData = [];
 
 // Initialize admin panel
 document.addEventListener('DOMContentLoaded', function() {
-    loadDashboardStats();
-    loadRecentBookings();
+    showDashboard();
+    setupEventListeners();
 });
+
+// Setup event listeners
+function setupEventListeners() {
+    // Refresh button
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('[data-action="refresh"]')) {
+            refreshCurrentSection();
+        }
+    });
+}
 
 // Navigation functions
 function showDashboard() {
     hideAllSections();
     document.getElementById('dashboard-content').style.display = 'block';
-    currentSection = 'dashboard';
-    loadDashboardStats();
-    loadRecentBookings();
-    updateActiveNav();
+    updateActiveNav('dashboard');
+    loadDashboardData();
 }
 
 function showBookings() {
     hideAllSections();
     document.getElementById('bookings-content').style.display = 'block';
-    currentSection = 'bookings';
+    updateActiveNav('bookings');
     loadBookings();
-    updateActiveNav();
 }
 
 function showContacts() {
     hideAllSections();
     document.getElementById('contacts-content').style.display = 'block';
-    currentSection = 'contacts';
+    updateActiveNav('contacts');
     loadContacts();
-    updateActiveNav();
 }
 
 function showServices() {
     hideAllSections();
     document.getElementById('services-content').style.display = 'block';
-    currentSection = 'services';
+    updateActiveNav('services');
     loadServices();
-    updateActiveNav();
 }
 
 function showDoctors() {
     hideAllSections();
     document.getElementById('doctors-content').style.display = 'block';
-    currentSection = 'doctors';
+    updateActiveNav('doctors');
     loadDoctors();
-    updateActiveNav();
 }
 
 function showBlog() {
     hideAllSections();
     document.getElementById('blog-content').style.display = 'block';
-    currentSection = 'blog';
-    loadBlog();
-    updateActiveNav();
+    updateActiveNav('blog');
+    loadBlogPosts();
 }
 
 function hideAllSections() {
-    const sections = ['dashboard-content', 'bookings-content', 'contacts-content', 'services-content', 'doctors-content', 'blog-content'];
+    const sections = [
+        'dashboard-content', 
+        'bookings-content', 
+        'contacts-content', 
+        'services-content', 
+        'doctors-content', 
+        'blog-content'
+    ];
     sections.forEach(section => {
-        document.getElementById(section).style.display = 'none';
+        const element = document.getElementById(section);
+        if (element) {
+            element.style.display = 'none';
+        }
     });
 }
 
-function updateActiveNav() {
+function updateActiveNav(section) {
     // Remove active class from all nav links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
     });
     
-    // Add active class to current nav link
-    const currentNavLink = document.querySelector(`[onclick="show${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}()"]`);
-    if (currentNavLink) {
-        currentNavLink.classList.add('active');
+    // Add active class to current section
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sectionIndex = ['dashboard', 'bookings', 'contacts', 'services', 'doctors', 'blog'].indexOf(section);
+    if (sectionIndex >= 0 && navLinks[sectionIndex]) {
+        navLinks[sectionIndex].classList.add('active');
     }
 }
 
 // Dashboard functions
-async function loadDashboardStats() {
-    try {
-        const [bookingsResponse, contactsResponse, servicesResponse] = await Promise.all([
-            fetch('/api/bookings'),
-            fetch('/api/contacts'),
-            fetch('/api/services')
-        ]);
-        
-        const bookings = await bookingsResponse.json();
-        const contacts = await contactsResponse.json();
-        const services = await servicesResponse.json();
-        
-        // Update statistics
-        document.getElementById('total-bookings').textContent = bookings.length;
-        document.getElementById('total-contacts').textContent = contacts.length;
-        document.getElementById('total-services').textContent = services.length;
-        
-        // Calculate new bookings (last 7 days)
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        const newBookings = bookings.filter(booking => new Date(booking.created_at) > oneWeekAgo);
-        document.getElementById('new-bookings').textContent = newBookings.length;
-        
-    } catch (error) {
-        console.error('Error loading dashboard stats:', error);
-        showAlert('حدث خطأ في تحميل الإحصائيات', 'danger');
-    }
-}
-
-async function loadRecentBookings() {
-    try {
-        const response = await fetch('/api/bookings');
-        const bookings = await response.json();
-        
-        const recentBookings = bookings.slice(0, 5); // Show only 5 recent bookings
-        
-        const tableBody = document.getElementById('recent-bookings-table');
-        tableBody.innerHTML = recentBookings.map(booking => `
-            <tr>
-                <td>${booking.name}</td>
-                <td>${booking.phone}</td>
-                <td>${booking.service_name || 'غير محدد'}</td>
-                <td>${formatDate(booking.appointment_date)}</td>
-                <td>
-                    <span class="badge bg-${getStatusBadgeColor(booking.status)}">
-                        ${getStatusText(booking.status)}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewBooking(${booking.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading recent bookings:', error);
-    }
-}
-
-// Bookings functions
-async function loadBookings() {
-    try {
-        const response = await fetch('/api/bookings');
-        const bookings = await response.json();
-        
-        const tableBody = document.getElementById('bookings-table');
-        tableBody.innerHTML = bookings.map(booking => `
-            <tr>
-                <td>${booking.name}</td>
-                <td>${booking.phone}</td>
-                <td>${booking.service_name || 'غير محدد'}</td>
-                <td>${booking.doctor_name || 'غير محدد'}</td>
-                <td>${booking.appointment_date}</td>
-                <td>${booking.appointment_time}</td>
-                <td>
-                    <select class="form-select form-select-sm" onchange="updateBookingStatus(${booking.id}, this.value)">
-                        <option value="pending" ${booking.status === 'pending' ? 'selected' : ''}>في الانتظار</option>
-                        <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>مؤكد</option>
-                        <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
-                        <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>مكتمل</option>
-                    </select>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewBooking(${booking.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBooking(${booking.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading bookings:', error);
-        showAlert('حدث خطأ في تحميل الحجوزات', 'danger');
-    }
-}
-
-async function updateBookingStatus(bookingId, status) {
-    try {
-        const response = await fetch(`/api/bookings/${bookingId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status })
-        });
-        
-        if (response.ok) {
-            showAlert('تم تحديث حالة الحجز بنجاح', 'success');
-        } else {
-            showAlert('حدث خطأ في تحديث حالة الحجز', 'danger');
-        }
-    } catch (error) {
-        console.error('Error updating booking status:', error);
-        showAlert('حدث خطأ في تحديث حالة الحجز', 'danger');
-    }
-}
-
-async function deleteBooking(bookingId) {
-    if (confirm('هل أنت متأكد من حذف هذا الحجز؟')) {
-        try {
-            const response = await fetch(`/api/bookings/${bookingId}`, {
-                method: 'DELETE'
-            });
-            
-            if (response.ok) {
-                showAlert('تم حذف الحجز بنجاح', 'success');
-                loadBookings();
-            } else {
-                showAlert('حدث خطأ في حذف الحجز', 'danger');
-            }
-        } catch (error) {
-            console.error('Error deleting booking:', error);
-            showAlert('حدث خطأ في حذف الحجز', 'danger');
-        }
-    }
-}
-
-// Contacts functions
-async function loadContacts() {
-    try {
-        const response = await fetch('/api/contacts');
-        const contacts = await response.json();
-        
-        const tableBody = document.getElementById('contacts-table');
-        tableBody.innerHTML = contacts.map(contact => `
-            <tr class="${contact.is_read ? '' : 'table-warning'}">
-                <td>${contact.name}</td>
-                <td>${contact.email}</td>
-                <td>${contact.phone || 'غير محدد'}</td>
-                <td>${contact.subject || 'غير محدد'}</td>
-                <td>${formatDate(contact.created_at)}</td>
-                <td>
-                    <span class="badge bg-${contact.is_read ? 'success' : 'warning'}">
-                        ${contact.is_read ? 'مقروءة' : 'جديدة'}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewContact(${contact.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteContact(${contact.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading contacts:', error);
-        showAlert('حدث خطأ في تحميل رسائل التواصل', 'danger');
-    }
-}
-
-async function deleteContact(contactId) {
-    if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
-        try {
-            const response = await fetch(`/api/contacts/${contactId}`, {
-                method: 'DELETE'
-            });
-            
-            if (response.ok) {
-                showAlert('تم حذف الرسالة بنجاح', 'success');
-                loadContacts();
-            } else {
-                showAlert('حدث خطأ في حذف الرسالة', 'danger');
-            }
-        } catch (error) {
-            console.error('Error deleting contact:', error);
-            showAlert('حدث خطأ في حذف الرسالة', 'danger');
-        }
-    }
-}
-
-// Services functions
-async function loadServices() {
-    try {
-        const response = await fetch('/api/services');
-        const services = await response.json();
-        
-        const tableBody = document.getElementById('services-table');
-        tableBody.innerHTML = services.map(service => `
-            <tr>
-                <td>${service.name}</td>
-                <td>${service.description.substring(0, 50)}...</td>
-                <td>${service.price} جنيه</td>
-                <td>${service.category}</td>
-                <td>
-                    <span class="badge bg-success">متاح</span>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="editService(${service.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteService(${service.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading services:', error);
-        showAlert('حدث خطأ في تحميل الخدمات', 'danger');
-    }
-}
-
-// Doctors functions
-async function loadDoctors() {
-    try {
-        const response = await fetch('/api/doctors');
-        const doctors = await response.json();
-        
-        const tableBody = document.getElementById('doctors-table');
-        tableBody.innerHTML = doctors.map(doctor => `
-            <tr>
-                <td>${doctor.name}</td>
-                <td>${doctor.specialization}</td>
-                <td>${doctor.qualification}</td>
-                <td>${doctor.experience}</td>
-                <td>
-                    <span class="badge bg-success">متاح</span>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="editDoctor(${doctor.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteDoctor(${doctor.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading doctors:', error);
-        showAlert('حدث خطأ في تحميل الأطباء', 'danger');
-    }
-}
-
-// Blog functions
-async function loadBlog() {
-    try {
-        const response = await fetch('/api/blog');
-        const posts = await response.json();
-        
-        const tableBody = document.getElementById('blog-table');
-        tableBody.innerHTML = posts.map(post => `
-            <tr>
-                <td>${post.title}</td>
-                <td>${post.author}</td>
-                <td>${formatDate(post.created_at)}</td>
-                <td>
-                    <span class="badge bg-success">منشور</span>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="editBlog(${post.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBlog(${post.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading blog posts:', error);
-        showAlert('حدث خطأ في تحميل المقالات', 'danger');
-    }
-}
-
-// Utility functions
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ar-EG', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
+function loadDashboardData() {
+    showLoading('dashboard-content');
+    
+    Promise.all([
+        fetch('/api/stats').then(response => response.json()),
+        fetch('/api/bookings?limit=5').then(response => response.json())
+    ])
+    .then(([stats, recentBookings]) => {
+        updateDashboardStats(stats);
+        updateRecentBookings(recentBookings);
+        hideLoading('dashboard-content');
+    })
+    .catch(error => {
+        console.error('Error loading dashboard data:', error);
+        hideLoading('dashboard-content');
+        showError('حدث خطأ أثناء تحميل البيانات');
     });
 }
 
-function getStatusBadgeColor(status) {
-    switch (status) {
-        case 'pending': return 'warning';
-        case 'confirmed': return 'success';
-        case 'cancelled': return 'danger';
-        case 'completed': return 'info';
-        default: return 'secondary';
-    }
+function updateDashboardStats(stats) {
+    document.getElementById('total-bookings').textContent = stats.total_bookings || 0;
+    document.getElementById('new-bookings').textContent = stats.new_bookings || 0;
+    document.getElementById('total-contacts').textContent = stats.total_contacts || 0;
+    document.getElementById('total-services').textContent = stats.total_services || 0;
 }
 
+function updateRecentBookings(bookings) {
+    const table = document.getElementById('recent-bookings-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    if (bookings.length === 0) {
+        table.innerHTML = '<tr><td colspan="6" class="text-center text-muted">لا توجد حجوزات حديثة</td></tr>';
+        return;
+    }
+    
+    bookings.forEach(booking => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${escapeHtml(booking.name)}</td>
+            <td>${escapeHtml(booking.phone)}</td>
+            <td>${escapeHtml(booking.service)}</td>
+            <td>${formatDate(booking.date)}</td>
+            <td><span class="status-badge status-${booking.status}">${getStatusText(booking.status)}</span></td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewBooking(${booking.id})" title="عرض التفاصيل">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Bookings functions
+function loadBookings() {
+    if (!requireAdmin()) return;
+    showLoading('bookings-content');
+    
+    fetch('/api/bookings')
+        .then(response => response.json())
+        .then(data => {
+            bookingsData = data;
+            updateBookingsTable(data);
+            hideLoading('bookings-content');
+        })
+        .catch(error => {
+            console.error('Error loading bookings:', error);
+            hideLoading('bookings-content');
+            showError('حدث خطأ أثناء تحميل الحجوزات');
+        });
+}
+
+function updateBookingsTable(bookings) {
+    const table = document.getElementById('bookings-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    if (bookings.length === 0) {
+        table.innerHTML = '<tr><td colspan="8" class="text-center text-muted">لا توجد حجوزات</td></tr>';
+        return;
+    }
+    
+    bookings.forEach(booking => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${escapeHtml(booking.name)}</td>
+            <td>${escapeHtml(booking.phone)}</td>
+            <td>${escapeHtml(booking.service)}</td>
+            <td>${escapeHtml(booking.doctor || '-')}</td>
+            <td>${formatDate(booking.date)}</td>
+            <td>${escapeHtml(booking.time)}</td>
+            <td><span class="status-badge status-${booking.status}">${getStatusText(booking.status)}</span></td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewBooking(${booking.id})" title="عرض التفاصيل">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" onclick="updateBookingStatus(${booking.id}, 'confirmed')" title="تأكيد الحجز">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="updateBookingStatus(${booking.id}, 'completed')" title="إكمال الحجز">
+                        <i class="fas fa-flag-checkered"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBooking(${booking.id})" title="حذف الحجز">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Contacts functions
+function loadContacts() {
+    showLoading('contacts-content');
+    
+    fetch('/api/contacts')
+        .then(response => response.json())
+        .then(data => {
+            contactsData = data;
+            updateContactsTable(data);
+            hideLoading('contacts-content');
+        })
+        .catch(error => {
+            console.error('Error loading contacts:', error);
+            hideLoading('contacts-content');
+            showError('حدث خطأ أثناء تحميل رسائل التواصل');
+        });
+}
+
+function updateContactsTable(contacts) {
+    const table = document.getElementById('contacts-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    if (contacts.length === 0) {
+        table.innerHTML = '<tr><td colspan="6" class="text-center text-muted">لا توجد رسائل</td></tr>';
+        return;
+    }
+    
+    contacts.forEach(contact => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${escapeHtml(contact.name)}</td>
+            <td>${escapeHtml(contact.email)}</td>
+            <td>${escapeHtml(contact.phone)}</td>
+            <td>${escapeHtml(contact.subject)}</td>
+            <td>${formatDate(contact.date)}</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewContact(${contact.id})" title="عرض الرسالة">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteContact(${contact.id})" title="حذف الرسالة">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Services functions
+function loadServices() {
+    showLoading('services-content');
+    
+    fetch('/api/services')
+        .then(response => response.json())
+        .then(data => {
+            servicesData = data;
+            updateServicesTable(data);
+            hideLoading('services-content');
+        })
+        .catch(error => {
+            console.error('Error loading services:', error);
+            hideLoading('services-content');
+            showError('حدث خطأ أثناء تحميل الخدمات');
+        });
+}
+
+function updateServicesTable(services) {
+    const table = document.getElementById('services-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    if (services.length === 0) {
+        table.innerHTML = '<tr><td colspan="5" class="text-center text-muted">لا توجد خدمات</td></tr>';
+        return;
+    }
+    
+    services.forEach(service => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <img src="${service.image || 'assets/images/placeholder.jpg'}" alt="${service.name}" 
+                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                     onerror="this.src='assets/images/placeholder.jpg'">
+            </td>
+            <td>${escapeHtml(service.name)}</td>
+            <td>${escapeHtml(service.description.substring(0, 100))}${service.description.length > 100 ? '...' : ''}</td>
+            <td>${service.price} ريال</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editService(${service.id})" title="تعديل الخدمة">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteService(${service.id})" title="حذف الخدمة">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Doctors functions
+function loadDoctors() {
+    showLoading('doctors-content');
+    
+    fetch('/api/doctors')
+        .then(response => response.json())
+        .then(data => {
+            doctorsData = data;
+            updateDoctorsTable(data);
+            hideLoading('doctors-content');
+        })
+        .catch(error => {
+            console.error('Error loading doctors:', error);
+            hideLoading('doctors-content');
+            showError('حدث خطأ أثناء تحميل الأطباء');
+        });
+}
+
+function updateDoctorsTable(doctors) {
+    const table = document.getElementById('doctors-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    if (doctors.length === 0) {
+        table.innerHTML = '<tr><td colspan="5" class="text-center text-muted">لا يوجد أطباء</td></tr>';
+        return;
+    }
+    
+    doctors.forEach(doctor => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <img src="${doctor.image || 'assets/images/placeholder.jpg'}" alt="${doctor.name}" 
+                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                     onerror="this.src='assets/images/placeholder.jpg'">
+            </td>
+            <td>${escapeHtml(doctor.name)}</td>
+            <td>${escapeHtml(doctor.specialization)}</td>
+            <td>${doctor.experience} سنوات</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editDoctor(${doctor.id})" title="تعديل الطبيب">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteDoctor(${doctor.id})" title="حذف الطبيب">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Blog functions
+function loadBlogPosts() {
+    showLoading('blog-content');
+    
+    fetch('/api/blog')
+        .then(response => response.json())
+        .then(data => {
+            blogData = data;
+            updateBlogTable(data);
+            hideLoading('blog-content');
+        })
+        .catch(error => {
+            console.error('Error loading blog posts:', error);
+            hideLoading('blog-content');
+            showError('حدث خطأ أثناء تحميل المقالات');
+        });
+}
+
+function updateBlogTable(posts) {
+    const table = document.getElementById('blog-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    if (posts.length === 0) {
+        table.innerHTML = '<tr><td colspan="5" class="text-center text-muted">لا توجد مقالات</td></tr>';
+        return;
+    }
+    
+    posts.forEach(post => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <img src="${post.image || 'assets/images/placeholder.jpg'}" alt="${post.title}" 
+                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                     onerror="this.src='assets/images/placeholder.jpg'">
+            </td>
+            <td>${escapeHtml(post.title)}</td>
+            <td>${escapeHtml(post.author)}</td>
+            <td>${formatDate(post.date)}</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editBlogPost(${post.id})" title="تعديل المقال">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBlogPost(${post.id})" title="حذف المقال">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Utility functions
 function getStatusText(status) {
-    switch (status) {
-        case 'pending': return 'في الانتظار';
-        case 'confirmed': return 'مؤكد';
-        case 'cancelled': return 'ملغي';
-        case 'completed': return 'مكتمل';
-        default: return 'غير محدد';
+    const statusMap = {
+        'new': 'جديد',
+        'confirmed': 'مؤكد',
+        'completed': 'مكتمل',
+        'cancelled': 'ملغي'
+    };
+    return statusMap[status] || status;
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ar-SA');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <div class="loading"></div>
+                <p class="mt-3 text-muted">جاري التحميل...</p>
+            </div>
+        `;
     }
 }
 
-function showAlert(message, type = 'info') {
-    const alertContainer = document.createElement('div');
-    alertContainer.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    alertContainer.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertContainer.innerHTML = `
+function hideLoading(containerId) {
+    // Loading will be hidden when content is loaded
+}
+
+function showError(message) {
+    // Create error alert
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show';
+    alert.innerHTML = `
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
-    document.body.appendChild(alertContainer);
+    // Insert at the top of the main content
+    const mainContent = document.querySelector('.admin-content');
+    if (mainContent) {
+        mainContent.insertBefore(alert, mainContent.firstChild);
+    }
+}
+
+function showSuccess(message) {
+    // Create success alert
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success alert-dismissible fade show';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
     
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (alertContainer.parentNode) {
-            alertContainer.remove();
-        }
-    }, 5000);
+    // Insert at the top of the main content
+    const mainContent = document.querySelector('.admin-content');
+    if (mainContent) {
+        mainContent.insertBefore(alert, mainContent.firstChild);
+    }
 }
 
-function refreshStats() {
-    loadDashboardStats();
-    showAlert('تم تحديث الإحصائيات', 'success');
+function refreshCurrentSection() {
+    switch (currentSection) {
+        case 'dashboard':
+            loadDashboardData();
+            break;
+        case 'bookings':
+            loadBookings();
+            break;
+        case 'contacts':
+            loadContacts();
+            break;
+        case 'services':
+            loadServices();
+            break;
+        case 'doctors':
+            loadDoctors();
+            break;
+        case 'blog':
+            loadBlogPosts();
+            break;
+    }
 }
 
-function exportBookings() {
-    // Create CSV content
-    const csvContent = "data:text/csv;charset=utf-8," + 
-        "الاسم,الهاتف,الخدمة,الطبيب,التاريخ,الوقت,الحالة\n" +
-        // Add booking data here
-        "";
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "bookings.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    showAlert('تم تصدير الحجوزات بنجاح', 'success');
-}
-
-// Modal functions (to be implemented)
-function showAddServiceModal() {
-    showAlert('سيتم إضافة هذه الميزة قريباً', 'info');
-}
-
-function showAddDoctorModal() {
-    showAlert('سيتم إضافة هذه الميزة قريباً', 'info');
-}
-
-function showAddBlogModal() {
-    showAlert('سيتم إضافة هذه الميزة قريباً', 'info');
-}
-
+// CRUD Operations
 function viewBooking(id) {
-    showAlert(`عرض تفاصيل الحجز رقم ${id}`, 'info');
+    const booking = bookingsData.find(b => b.id === id);
+    if (booking) {
+        showBookingModal(booking);
+    }
+}
+
+function updateBookingStatus(id, status) {
+    if (!confirm('هل أنت متأكد من تغيير حالة الحجز؟')) return;
+    
+    fetch(`/api/bookings/${id}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccess('تم تحديث حالة الحجز بنجاح');
+            loadBookings();
+            if (currentSection === 'dashboard') {
+                loadDashboardData();
+            }
+        } else {
+            showError('حدث خطأ أثناء تحديث حالة الحجز');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating booking status:', error);
+        showError('حدث خطأ أثناء تحديث حالة الحجز');
+    });
+}
+
+function deleteBooking(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا الحجز؟')) return;
+    
+    fetch(`/api/bookings/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccess('تم حذف الحجز بنجاح');
+            loadBookings();
+            if (currentSection === 'dashboard') {
+                loadDashboardData();
+            }
+        } else {
+            showError('حدث خطأ أثناء حذف الحجز');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting booking:', error);
+        showError('حدث خطأ أثناء حذف الحجز');
+    });
 }
 
 function viewContact(id) {
-    showAlert(`عرض تفاصيل الرسالة رقم ${id}`, 'info');
+    const contact = contactsData.find(c => c.id === id);
+    if (contact) {
+        showContactModal(contact);
+    }
 }
 
+function deleteContact(id) {
+    if (!confirm('هل أنت متأكد من حذف هذه الرسالة؟')) return;
+    
+    fetch(`/api/contacts/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccess('تم حذف الرسالة بنجاح');
+            loadContacts();
+        } else {
+            showError('حدث خطأ أثناء حذف الرسالة');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting contact:', error);
+        showError('حدث خطأ أثناء حذف الرسالة');
+    });
+}
+
+// Modal functions
+function showBookingModal(booking) {
+    const modal = `
+        <div class="modal fade" id="bookingModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تفاصيل الحجز</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>الاسم:</strong> ${escapeHtml(booking.name)}</p>
+                                <p><strong>الهاتف:</strong> ${escapeHtml(booking.phone)}</p>
+                                <p><strong>البريد الإلكتروني:</strong> ${escapeHtml(booking.email || '-')}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>الخدمة:</strong> ${escapeHtml(booking.service)}</p>
+                                <p><strong>الطبيب:</strong> ${escapeHtml(booking.doctor || '-')}</p>
+                                <p><strong>التاريخ:</strong> ${formatDate(booking.date)}</p>
+                                <p><strong>الوقت:</strong> ${escapeHtml(booking.time)}</p>
+                            </div>
+                        </div>
+                        ${booking.notes ? `<p><strong>ملاحظات:</strong> ${escapeHtml(booking.notes)}</p>` : ''}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal
+    const existingModal = document.getElementById('bookingModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add new modal
+    document.body.insertAdjacentHTML('beforeend', modal);
+    
+    // Show modal
+    const modalElement = document.getElementById('bookingModal');
+    const bootstrapModal = new bootstrap.Modal(modalElement);
+    bootstrapModal.show();
+}
+
+function showContactModal(contact) {
+    const modal = `
+        <div class="modal fade" id="contactModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تفاصيل الرسالة</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>الاسم:</strong> ${escapeHtml(contact.name)}</p>
+                                <p><strong>البريد الإلكتروني:</strong> ${escapeHtml(contact.email)}</p>
+                                <p><strong>الهاتف:</strong> ${escapeHtml(contact.phone)}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>الموضوع:</strong> ${escapeHtml(contact.subject)}</p>
+                                <p><strong>التاريخ:</strong> ${formatDate(contact.date)}</p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <strong>الرسالة:</strong>
+                            <div class="border rounded p-3 mt-2 bg-light">
+                                ${escapeHtml(contact.message)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal
+    const existingModal = document.getElementById('contactModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add new modal
+    document.body.insertAdjacentHTML('beforeend', modal);
+    
+    // Show modal
+    const modalElement = document.getElementById('contactModal');
+    const bootstrapModal = new bootstrap.Modal(modalElement);
+    bootstrapModal.show();
+}
+
+// Export functions
+function exportBookings() {
+    fetch('/api/export/bookings')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bookings-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error exporting bookings:', error);
+            showError('حدث خطأ أثناء تصدير البيانات');
+        });
+}
+
+function exportContacts() {
+    fetch('/api/export/contacts')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `contacts-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error exporting contacts:', error);
+            showError('حدث خطأ أثناء تصدير البيانات');
+        });
+}
+
+// Placeholder functions for future implementation
 function editService(id) {
-    showAlert(`تعديل الخدمة رقم ${id}`, 'info');
-}
-
-function editDoctor(id) {
-    showAlert(`تعديل الطبيب رقم ${id}`, 'info');
-}
-
-function editBlog(id) {
-    showAlert(`تعديل المقال رقم ${id}`, 'info');
+    alert('سيتم إضافة ميزة تعديل الخدمات قريباً');
 }
 
 function deleteService(id) {
-    if (confirm('هل أنت متأكد من حذف هذه الخدمة؟')) {
-        showAlert('تم حذف الخدمة بنجاح', 'success');
-    }
+    if (!confirm('هل أنت متأكد من حذف هذه الخدمة؟')) return;
+    alert('سيتم إضافة ميزة حذف الخدمات قريباً');
+}
+
+function editDoctor(id) {
+    alert('سيتم إضافة ميزة تعديل الأطباء قريباً');
 }
 
 function deleteDoctor(id) {
-    if (confirm('هل أنت متأكد من حذف هذا الطبيب؟')) {
-        showAlert('تم حذف الطبيب بنجاح', 'success');
-    }
+    if (!confirm('هل أنت متأكد من حذف هذا الطبيب؟')) return;
+    alert('سيتم إضافة ميزة حذف الأطباء قريباً');
 }
 
-function deleteBlog(id) {
-    if (confirm('هل أنت متأكد من حذف هذا المقال؟')) {
-        showAlert('تم حذف المقال بنجاح', 'success');
+function editBlogPost(id) {
+    alert('سيتم إضافة ميزة تعديل المقالات قريباً');
+}
+
+function deleteBlogPost(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
+    alert('سيتم إضافة ميزة حذف المقالات قريباً');
+}
+
+function showAddServiceModal() {
+    const modal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+    modal.show();
+}
+
+function showAddDoctorModal() {
+    const modal = new bootstrap.Modal(document.getElementById('addDoctorModal'));
+    modal.show();
+}
+
+function showAddBlogModal() {
+    alert('سيتم إضافة ميزة إضافة المقالات قريباً');
+}
+
+function addService() {
+    const form = document.getElementById('addServiceForm');
+    const formData = new FormData(form);
+    
+    fetch('/api/services', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('addServiceModal')).hide();
+            form.reset();
+            loadServices();
+            showSuccess('تم إضافة الخدمة بنجاح');
+        } else {
+            showError('حدث خطأ أثناء إضافة الخدمة');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding service:', error);
+        showError('حدث خطأ أثناء إضافة الخدمة');
+    });
+}
+
+function addDoctor() {
+    const form = document.getElementById('addDoctorForm');
+    const formData = new FormData(form);
+    
+    fetch('/api/doctors', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('addDoctorModal')).hide();
+            form.reset();
+            loadDoctors();
+            showSuccess('تم إضافة الطبيب بنجاح');
+        } else {
+            showError('حدث خطأ أثناء إضافة الطبيب');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding doctor:', error);
+        showError('حدث خطأ أثناء إضافة الطبيب');
+    });
+}
+
+// حماية جميع الوظائف الإدارية
+function requireAdmin() {
+    if (localStorage.getItem('admin_logged_in') !== '1') {
+        alert('يجب تسجيل الدخول كأدمن!');
+        window.location.reload();
+        return false;
     }
+    return true;
 } 
