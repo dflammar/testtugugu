@@ -1,0 +1,31 @@
+{
+  "name": "panorama-radiology-center",
+  "version": "1.0.0",
+  "description": "مركز بانوراما للأشعة - النسخة المبسطة",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "start-backend": "cd backend && python app.py",
+    "dev": "python -m http.server 8080",
+    "build": "echo 'Static site - no build required'"
+  },
+  "keywords": [
+    "radiology",
+    "medical",
+    "egypt",
+    "arabic",
+    "healthcare"
+  ],
+  "author": "مركز بانوراما للأشعة",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panorama-radiology/website"
+  },
+  "homepage": "https://panorama-radiology.com",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 

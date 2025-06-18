@@ -1,0 +1,505 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}المدونة - مركز بانوراما للأشعة{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدونة - مركز بانوراما للأشعة</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <!-- Andalusia Egypt Inspired CSS -->
+    <link rel="stylesheet" href="assets/css/andalusia.css">
+    
+    <style>
+        body {
+            background-color: #f8f5f0;
+            color: #5a4637;
+            font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar, .footer {
+            background: #fff8f0 !important;
+            border-bottom: 1px solid #e5d3b3;
+        }
+        
+        .navbar-brand, .navbar-nav .nav-link, .footer {
+            color: #b08d57 !important;
+            font-weight: bold;
+        }
+        
+        .navbar-nav .nav-link.active, .navbar-nav .nav-link:focus, .navbar-nav .nav-link:hover {
+            color: #007bff !important;
+        }
+        
+        .btn-primary, .btn-primary:active, .btn-primary:focus {
+            background: #009fe3 !important;
+            border-color: #009fe3 !important;
+            color: #fff !important;
+            font-weight: bold;
+        }
+        
+        .btn-outline-primary {
+            border-color: #009fe3 !important;
+            color: #009fe3 !important;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .section-title, h1, h2, h3, h4, h5 {
+            color: #b08d57;
+            font-weight: bold;
+        }
+        
+        .card {
+            border-radius: 1rem;
+            border: 1px solid #e5d3b3;
+        }
+        
+        .card-header {
+            background: #fff8f0;
+            color: #b08d57;
+            border-bottom: 1px solid #e5d3b3;
+        }
+        
+        .footer {
+            background: #fff8f0;
+            color: #b08d57;
+            border-top: 1px solid #e5d3b3;
+        }
+        
+        .footer a {
+            color: #009fe3;
+        }
+        
+        .text-main {
+            color: #009fe3 !important;
+        }
+        
+        .btn-main {
+            background: #009fe3 !important;
+            border-color: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .btn-outline-main {
+            border-color: #009fe3 !important;
+            color: #009fe3 !important;
+        }
+        
+        .btn-outline-main:hover {
+            background: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .blog-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .blog-image {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header navbar navbar-expand-lg py-3">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <img src="assets/images/equipment/logo.png" alt="Logo" class="logo me-2">
+                <span class="fw-bold" style="color:#00bfae; font-size:2rem;">بانوراما</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <nav class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a href="/" class="nav-link">الرئيسية</a></li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">من نحن</a></li>
+                    <li class="nav-item"><a href="services.html" class="nav-link">الخدمات</a></li>
+                    <li class="nav-item"><a href="team.html" class="nav-link">الأطباء</a></li>
+                    <li class="nav-item"><a href="offers.html" class="nav-link">العروض</a></li>
+                    <li class="nav-item"><a href="blog.html" class="nav-link active">المدونة</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <h1 class="fw-bold text-main mb-3">المدونة الطبية</h1>
+                    <p class="lead text-muted">اطلع على أحدث المقالات الطبية والنصائح الصحية من فريقنا المتخصص</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="search-input" placeholder="ابحث في المقالات...">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" id="category-filter">
+                                        <option value="">جميع الفئات</option>
+                                        <option value="أشعة">أشعة</option>
+                                        <option value="صحة عامة">صحة عامة</option>
+                                        <option value="نصائح طبية">نصائح طبية</option>
+                                        <option value="أمراض">أمراض</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4" id="blog-grid">
+                <!-- Blog posts will be loaded dynamically -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <nav aria-label="صفحات المدونة">
+                        <ul class="pagination justify-content-center" id="pagination">
+                            <!-- Pagination will be generated dynamically -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h3 class="fw-bold text-main mb-3">اشترك في النشرة البريدية</h3>
+                    <p class="text-muted mb-4">احصل على أحدث المقالات الطبية والنصائح الصحية مباشرة في بريدك الإلكتروني</p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="أدخل بريدك الإلكتروني">
+                                <button class="btn btn-main" type="button">
+                                    <i class="fas fa-paper-plane ms-2"></i>
+                                    اشتراك
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">مركز بانوراما للأشعة</h5>
+                    <p>مركز متخصص في جميع أنواع الأشعة التشخيصية والتحاليل الطبية بأحدث الأجهزة وأفضل الكوادر الطبية في قطور</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="icon-circle"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="icon-circle"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="icon-circle"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="about.html" class="text-decoration-none">من نحن</a></li>
+                        <li><a href="services.html" class="text-decoration-none">الخدمات</a></li>
+                        <li><a href="team.html" class="text-decoration-none">الأطباء</a></li>
+                        <li><a href="blog.html" class="text-decoration-none">المدونة</a></li>
+                        <li><a href="contact.html" class="text-decoration-none">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">معلومات التواصل</h5>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span>قطور، الغربية، مصر</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        <span>040-1234567</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-mobile-alt me-2"></i>
+                        <span>01234567890</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span>info@panorama.com</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 مركز بانوراما للأشعة. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/custom.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        const postsPerPage = 6;
+        let allPosts = [];
+
+        // Load blog posts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBlogPosts();
+        });
+
+        function loadBlogPosts() {
+            const samplePosts = [
+                {
+                    id: 1,
+                    title: "أهمية الفحص الدوري بالأشعة",
+                    content: "الفحص الدوري بالأشعة يساعد في الكشف المبكر عن الأمراض وعلاجها قبل تفاقمها. ينصح بإجراء فحوصات دورية للأشخاص فوق سن الأربعين، خاصة أولئك الذين لديهم تاريخ عائلي للأمراض.",
+                    author: "د. أحمد محمد",
+                    category: "أشعة",
+                    created_at: "2024-01-15",
+                    image: "assets/images/blog/blog1.jpg",
+                    read_time: "5 دقائق"
+                },
+                {
+                    id: 2,
+                    title: "متى تحتاج لأشعة رنين مغناطيسي؟",
+                    content: "الرنين المغناطيسي ضروري في حالات معينة مثل فحص الدماغ والعمود الفقري والمفاصل. يساعد في تشخيص العديد من الأمراض بدقة عالية دون التعرض للإشعاع.",
+                    author: "د. فاطمة علي",
+                    category: "أشعة",
+                    created_at: "2024-01-10",
+                    image: "assets/images/blog/blog2.jpg",
+                    read_time: "7 دقائق"
+                },
+                {
+                    id: 3,
+                    title: "نصائح قبل إجراء الأشعة",
+                    content: "هناك بعض النصائح المهمة التي يجب اتباعها قبل إجراء الأشعة مثل الصيام لفترة معينة وتجنب بعض الأدوية. هذه النصائح تساعد في الحصول على نتائج دقيقة.",
+                    author: "د. محمد حسن",
+                    category: "نصائح طبية",
+                    created_at: "2024-01-08",
+                    image: "assets/images/blog/blog3.jpg",
+                    read_time: "4 دقائق"
+                },
+                {
+                    id: 4,
+                    title: "أشعة الأسنان: متى تحتاجها؟",
+                    content: "أشعة الأسنان مهمة لتشخيص مشاكل الأسنان والفكين. تساعد في اكتشاف التسوس والالتهابات ومشاكل الجذور قبل تفاقمها.",
+                    author: "د. سارة أحمد",
+                    category: "أشعة",
+                    created_at: "2024-01-05",
+                    image: "assets/images/blog/blog4.jpg",
+                    read_time: "6 دقائق"
+                },
+                {
+                    id: 5,
+                    title: "فوائد شرب الماء للصحة",
+                    content: "شرب الماء بكميات كافية يومياً له فوائد عديدة للصحة. يساعد في تحسين وظائف الجسم وطرد السموم والحفاظ على صحة البشرة.",
+                    author: "د. علي محمود",
+                    category: "صحة عامة",
+                    created_at: "2024-01-03",
+                    image: "assets/images/blog/blog5.jpg",
+                    read_time: "3 دقائق"
+                },
+                {
+                    id: 6,
+                    title: "أعراض أمراض القلب المبكرة",
+                    content: "التعرف على أعراض أمراض القلب المبكرة يساعد في التشخيص المبكر والعلاج الفعال. من المهم الانتباه لأي أعراض غير طبيعية.",
+                    author: "د. نادية كمال",
+                    category: "أمراض",
+                    created_at: "2024-01-01",
+                    image: "assets/images/blog/blog6.jpg",
+                    read_time: "8 دقائق"
+                },
+                {
+                    id: 7,
+                    title: "أشعة الإيكو للقلب",
+                    content: "أشعة الإيكو للقلب هي فحص مهم لتشخيص أمراض القلب. تساعد في رؤية القلب وهو يعمل وتشخيص المشاكل بدقة.",
+                    author: "د. أحمد محمد",
+                    category: "أشعة",
+                    created_at: "2023-12-28",
+                    image: "assets/images/blog/blog7.jpg",
+                    read_time: "6 دقائق"
+                },
+                {
+                    id: 8,
+                    title: "نصائح للحفاظ على صحة العظام",
+                    content: "الحفاظ على صحة العظام مهم جداً خاصة مع التقدم في العمر. النظام الغذائي الصحيح والتمارين الرياضية تساعد في تقوية العظام.",
+                    author: "د. فاطمة علي",
+                    category: "صحة عامة",
+                    created_at: "2023-12-25",
+                    image: "assets/images/blog/blog8.jpg",
+                    read_time: "5 دقائق"
+                }
+            ];
+
+            allPosts = samplePosts;
+            renderBlogPosts();
+            renderPagination();
+        }
+
+        function renderBlogPosts() {
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const postsToShow = allPosts.slice(startIndex, endIndex);
+
+            const container = document.getElementById('blog-grid');
+            container.innerHTML = postsToShow.map(post => `
+                <div class="col-lg-4 col-md-6 blog-item" data-category="${post.category}">
+                    <div class="card blog-card h-100 border-0 shadow">
+                        <img src="${post.image}" class="card-img-top" alt="${post.title}" 
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-main">${post.category}</span>
+                                <small class="text-muted">${post.read_time}</small>
+                            </div>
+                            <h5 class="card-title">${post.title}</h5>
+                            <p class="card-text">${post.content.substring(0, 100)}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">${post.author}</small>
+                                <small class="text-muted">${formatDate(post.created_at)}</small>
+                            </div>
+                            <a href="blog-detail.html?id=${post.id}" class="btn btn-outline-main mt-3">قراءة المزيد</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(allPosts.length / postsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">السابق</a>
+                </li>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">التالي</a>
+                </li>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            if (page >= 1 && page <= Math.ceil(allPosts.length / postsPerPage)) {
+                currentPage = page;
+                renderBlogPosts();
+                renderPagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function() {
+            filterPosts();
+        });
+
+        document.getElementById('category-filter').addEventListener('change', function() {
+            filterPosts();
+        });
+
+        function filterPosts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const selectedCategory = document.getElementById('category-filter').value;
+            
+            const filteredPosts = allPosts.filter(post => {
+                const matchesSearch = post.title.toLowerCase().includes(searchTerm) || 
+                                    post.content.toLowerCase().includes(searchTerm) ||
+                                    post.author.toLowerCase().includes(searchTerm);
+                const matchesCategory = !selectedCategory || post.category === selectedCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Update posts and pagination
+            const originalPosts = allPosts;
+            allPosts = filteredPosts;
+            currentPage = 1;
+            renderBlogPosts();
+            renderPagination();
+            
+            // Restore original posts for future filtering
+            allPosts = originalPosts;
+        }
+    </script>
+</body>
+</html>
+{% endblock %} 

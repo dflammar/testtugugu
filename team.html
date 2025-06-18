@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الفريق الطبي - مركز بانوراما للأشعة{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفريق الطبي - مركز بانوراما للأشعة</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <!-- Andalusia Egypt Inspired CSS -->
+    <link rel="stylesheet" href="assets/css/andalusia.css">
+    
+    <style>
+        body {
+            background-color: #f8f5f0;
+            color: #5a4637;
+            font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar, .footer {
+            background: #fff8f0 !important;
+            border-bottom: 1px solid #e5d3b3;
+        }
+        
+        .navbar-brand, .navbar-nav .nav-link, .footer {
+            color: #b08d57 !important;
+            font-weight: bold;
+        }
+        
+        .navbar-nav .nav-link.active, .navbar-nav .nav-link:focus, .navbar-nav .nav-link:hover {
+            color: #007bff !important;
+        }
+        
+        .btn-primary, .btn-primary:active, .btn-primary:focus {
+            background: #009fe3 !important;
+            border-color: #009fe3 !important;
+            color: #fff !important;
+            font-weight: bold;
+        }
+        
+        .btn-outline-primary {
+            border-color: #009fe3 !important;
+            color: #009fe3 !important;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .section-title, h1, h2, h3, h4, h5 {
+            color: #b08d57;
+            font-weight: bold;
+        }
+        
+        .card {
+            border-radius: 1rem;
+            border: 1px solid #e5d3b3;
+        }
+        
+        .card-header {
+            background: #fff8f0;
+            color: #b08d57;
+            border-bottom: 1px solid #e5d3b3;
+        }
+        
+        .footer {
+            background: #fff8f0;
+            color: #b08d57;
+            border-top: 1px solid #e5d3b3;
+        }
+        
+        .footer a {
+            color: #009fe3;
+        }
+        
+        .text-main {
+            color: #009fe3 !important;
+        }
+        
+        .btn-main {
+            background: #009fe3 !important;
+            border-color: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .btn-outline-main {
+            border-color: #009fe3 !important;
+            color: #009fe3 !important;
+        }
+        
+        .btn-outline-main:hover {
+            background: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .doctor-card {
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .doctor-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 3px solid #009fe3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header navbar navbar-expand-lg py-3">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <img src="assets/images/equipment/logo.png" alt="Logo" class="logo me-2">
+                <span class="fw-bold" style="color:#00bfae; font-size:2rem;">بانوراما</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <nav class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a href="/" class="nav-link">الرئيسية</a></li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">من نحن</a></li>
+                    <li class="nav-item"><a href="services.html" class="nav-link">الخدمات</a></li>
+                    <li class="nav-item"><a href="team.html" class="nav-link active">الأطباء</a></li>
+                    <li class="nav-item"><a href="offers.html" class="nav-link">العروض</a></li>
+                    <li class="nav-item"><a href="blog.html" class="nav-link">المدونة</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <h1 class="fw-bold text-main mb-3">فريقنا الطبي</h1>
+                    <p class="lead text-muted">تعرف على أطبائنا المتخصصين ذوي الخبرة العالية في مجال الأشعة والتحاليل الطبية</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="search-input" placeholder="ابحث في الأطباء...">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" id="specialization-filter">
+                                        <option value="">جميع التخصصات</option>
+                                        <option value="أشعة تشخيصية">أشعة تشخيصية</option>
+                                        <option value="أشعة نساء">أشعة نساء</option>
+                                        <option value="أشعة عظام">أشعة عظام</option>
+                                        <option value="أشعة أطفال">أشعة أطفال</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctors Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4" id="doctors-grid">
+                <!-- Doctors will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Our Team -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="fw-bold text-main mb-3">لماذا تختار فريقنا الطبي؟</h2>
+                    <p class="lead text-muted">نتميز بفريق طبي متميز ذو خبرة عالية</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 border-0 shadow text-center">
+                        <div class="card-body p-4">
+                            <i class="fas fa-graduation-cap text-main mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="card-title">مؤهلات عالية</h5>
+                            <p class="card-text text-muted">جميع أطبائنا حاصلون على مؤهلات علمية عالية من أفضل الجامعات المصرية والعالمية.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 border-0 shadow text-center">
+                        <div class="card-body p-4">
+                            <i class="fas fa-clock text-main mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="card-title">خبرة طويلة</h5>
+                            <p class="card-text text-muted">فريقنا يتمتع بخبرة تتراوح من 10 إلى 20 سنة في مجال الأشعة التشخيصية.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 border-0 shadow text-center">
+                        <div class="card-body p-4">
+                            <i class="fas fa-heart text-main mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="card-title">رعاية متميزة</h5>
+                            <p class="card-text text-muted">نقدم رعاية طبية متميزة مع التركيز على راحة المريض والدقة في التشخيص.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">مركز بانوراما للأشعة</h5>
+                    <p>مركز متخصص في جميع أنواع الأشعة التشخيصية والتحاليل الطبية بأحدث الأجهزة وأفضل الكوادر الطبية في قطور</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="icon-circle"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="icon-circle"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="icon-circle"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="about.html" class="text-decoration-none">من نحن</a></li>
+                        <li><a href="services.html" class="text-decoration-none">الخدمات</a></li>
+                        <li><a href="team.html" class="text-decoration-none">الأطباء</a></li>
+                        <li><a href="blog.html" class="text-decoration-none">المدونة</a></li>
+                        <li><a href="contact.html" class="text-decoration-none">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">معلومات التواصل</h5>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span>قطور، الغربية، مصر</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        <span>040-1234567</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-mobile-alt me-2"></i>
+                        <span>01234567890</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span>info@panorama.com</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 مركز بانوراما للأشعة. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/custom.js"></script>
+    
+    <script>
+        // Load doctors on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDoctorsGrid();
+        });
+
+        function loadDoctorsGrid() {
+            const sampleDoctors = [
+                {
+                    id: 1,
+                    name: "د. أحمد محمد",
+                    specialization: "أخصائي أشعة تشخيصية",
+                    qualification: "دكتوراه في الأشعة التشخيصية",
+                    experience: "15 سنة",
+                    image: "assets/images/doctors/doctor1.jpg",
+                    bio: "خبرة 15 سنة في مجال الأشعة التشخيصية، متخصص في أشعة الدماغ والعمود الفقري والمفاصل. حاصل على دكتوراه من جامعة القاهرة."
+                },
+                {
+                    id: 2,
+                    name: "د. فاطمة علي",
+                    specialization: "أخصائية أشعة نساء",
+                    qualification: "ماجستير في الأشعة النسائية",
+                    experience: "10 سنوات",
+                    image: "assets/images/doctors/doctor2.jpg",
+                    bio: "متخصصة في أشعة النساء والتوليد، خبرة في فحوصات الحمل والثدي. حاصلة على ماجستير من جامعة عين شمس."
+                },
+                {
+                    id: 3,
+                    name: "د. محمد حسن",
+                    specialization: "أخصائي أشعة عظام",
+                    qualification: "دكتوراه في أشعة العظام",
+                    experience: "12 سنة",
+                    image: "assets/images/doctors/doctor3.jpg",
+                    bio: "متخصص في أشعة العظام والمفاصل، خبرة في تشخيص الكسور وأمراض المفاصل. حاصل على دكتوراه من جامعة الإسكندرية."
+                },
+                {
+                    id: 4,
+                    name: "د. سارة أحمد",
+                    specialization: "أخصائية أشعة أطفال",
+                    qualification: "ماجستير في أشعة الأطفال",
+                    experience: "8 سنوات",
+                    image: "assets/images/doctors/doctor4.jpg",
+                    bio: "متخصصة في أشعة الأطفال، خبرة في فحوصات الأطفال حديثي الولادة والأطفال الصغار. حاصلة على ماجستير من جامعة المنصورة."
+                },
+                {
+                    id: 5,
+                    name: "د. علي محمود",
+                    specialization: "أخصائي أشعة تشخيصية",
+                    qualification: "دكتوراه في الأشعة التشخيصية",
+                    experience: "14 سنة",
+                    image: "assets/images/doctors/doctor5.jpg",
+                    bio: "متخصص في أشعة الصدر والبطن، خبرة في تشخيص أمراض القلب والرئة والجهاز الهضمي. حاصل على دكتوراه من جامعة الزقازيق."
+                },
+                {
+                    id: 6,
+                    name: "د. نادية كمال",
+                    specialization: "أخصائية أشعة نساء",
+                    qualification: "ماجستير في الأشعة النسائية",
+                    experience: "9 سنوات",
+                    image: "assets/images/doctors/doctor6.jpg",
+                    bio: "متخصصة في أشعة النساء، خبرة في فحوصات الثدي وأشعة الحمل. حاصلة على ماجستير من جامعة طنطا."
+                }
+            ];
+
+            renderDoctors(sampleDoctors);
+        }
+
+        function renderDoctors(doctors) {
+            const container = document.getElementById('doctors-grid');
+            container.innerHTML = doctors.map(doctor => `
+                <div class="col-lg-4 col-md-6 doctor-item" data-specialization="${doctor.specialization}">
+                    <div class="card doctor-card h-100 border-0 shadow">
+                        <img src="${doctor.image}" class="card-img-top" alt="${doctor.name}" 
+                             style="height: 250px; object-fit: cover;">
+                        <div class="card-body text-center p-4">
+                            <h5 class="card-title">${doctor.name}</h5>
+                            <p class="card-text text-main fw-bold">${doctor.specialization}</p>
+                            <p class="card-text text-muted small">${doctor.qualification}</p>
+                            <p class="card-text text-muted small">${doctor.experience} خبرة</p>
+                            <p class="card-text">${doctor.bio}</p>
+                            <a href="doctor-detail.html?id=${doctor.id}" class="btn btn-outline-main">عرض الملف</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function() {
+            filterDoctors();
+        });
+
+        document.getElementById('specialization-filter').addEventListener('change', function() {
+            filterDoctors();
+        });
+
+        function filterDoctors() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const selectedSpecialization = document.getElementById('specialization-filter').value;
+            const doctorItems = document.querySelectorAll('.doctor-item');
+
+            doctorItems.forEach(item => {
+                const name = item.querySelector('.card-title').textContent.toLowerCase();
+                const specialization = item.querySelector('.card-text.text-main').textContent.toLowerCase();
+                const bio = item.querySelector('.card-text:last-of-type').textContent.toLowerCase();
+                const doctorSpecialization = item.dataset.specialization;
+
+                const matchesSearch = name.includes(searchTerm) || specialization.includes(searchTerm) || bio.includes(searchTerm);
+                const matchesSpecialization = !selectedSpecialization || doctorSpecialization === selectedSpecialization;
+
+                if (matchesSearch && matchesSpecialization) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+{% endblock %} 

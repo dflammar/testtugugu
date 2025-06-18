@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الخدمات - مركز بانوراما للأشعة</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <!-- Andalusia Egypt Inspired CSS -->
+    <link rel="stylesheet" href="assets/css/andalusia.css">
+    
+    <style>
+        body {
+            background-color: #f8f5f0;
+            color: #5a4637;
+            font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar, .footer {
+            background: #fff8f0 !important;
+            border-bottom: 1px solid #e5d3b3;
+        }
+        
+        .navbar-brand, .navbar-nav .nav-link, .footer {
+            color: #b08d57 !important;
+            font-weight: bold;
+        }
+        
+        .navbar-nav .nav-link.active, .navbar-nav .nav-link:focus, .navbar-nav .nav-link:hover {
+            color: #007bff !important;
+        }
+        
+        .btn-primary, .btn-primary:active, .btn-primary:focus {
+            background: #009fe3 !important;
+            border-color: #009fe3 !important;
+            color: #fff !important;
+            font-weight: bold;
+        }
+        
+        .btn-outline-primary {
+            border-color: #009fe3 !important;
+            color: #009fe3 !important;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .section-title, h1, h2, h3, h4, h5 {
+            color: #b08d57;
+            font-weight: bold;
+        }
+        
+        .card {
+            border-radius: 1rem;
+            border: 1px solid #e5d3b3;
+        }
+        
+        .card-header {
+            background: #fff8f0;
+            color: #b08d57;
+            border-bottom: 1px solid #e5d3b3;
+        }
+        
+        .footer {
+            background: #fff8f0;
+            color: #b08d57;
+            border-top: 1px solid #e5d3b3;
+        }
+        
+        .footer a {
+            color: #009fe3;
+        }
+        
+        .text-main {
+            color: #009fe3 !important;
+        }
+        
+        .btn-main {
+            background: #009fe3 !important;
+            border-color: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .btn-outline-main {
+            border-color: #009fe3 !important;
+            color: #009fe3 !important;
+        }
+        
+        .btn-outline-main:hover {
+            background: #009fe3 !important;
+            color: #fff !important;
+        }
+        
+        .service-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header navbar navbar-expand-lg py-3">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <img src="assets/images/equipment/logo.png" alt="Logo" class="logo me-2">
+                <span class="fw-bold" style="color:#00bfae; font-size:2rem;">بانوراما</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <nav class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a href="/" class="nav-link">الرئيسية</a></li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">من نحن</a></li>
+                    <li class="nav-item"><a href="services.html" class="nav-link active">الخدمات</a></li>
+                    <li class="nav-item"><a href="team.html" class="nav-link">الأطباء</a></li>
+                    <li class="nav-item"><a href="offers.html" class="nav-link">العروض</a></li>
+                    <li class="nav-item"><a href="blog.html" class="nav-link">المدونة</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <h1 class="fw-bold text-main mb-3">خدماتنا</h1>
+                    <p class="lead text-muted">نقدم مجموعة شاملة من خدمات الأشعة والتحاليل الطبية بأحدث التقنيات</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="search-input" placeholder="ابحث في الخدمات...">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" id="category-filter">
+                                        <option value="">جميع الفئات</option>
+                                        <option value="أشعة متقدمة">أشعة متقدمة</option>
+                                        <option value="أشعة أساسية">أشعة أساسية</option>
+                                        <option value="أشعة أسنان">أشعة أسنان</option>
+                                        <option value="تحاليل">تحاليل</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4" id="services-grid">
+                <!-- Services will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">مركز بانوراما للأشعة</h5>
+                    <p>مركز متخصص في جميع أنواع الأشعة التشخيصية والتحاليل الطبية بأحدث الأجهزة وأفضل الكوادر الطبية في قطور</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="icon-circle"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="icon-circle"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="icon-circle"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="about.html" class="text-decoration-none">من نحن</a></li>
+                        <li><a href="services.html" class="text-decoration-none">الخدمات</a></li>
+                        <li><a href="team.html" class="text-decoration-none">الأطباء</a></li>
+                        <li><a href="blog.html" class="text-decoration-none">المدونة</a></li>
+                        <li><a href="contact.html" class="text-decoration-none">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">معلومات التواصل</h5>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span>قطور، الغربية، مصر</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        <span>040-1234567</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-mobile-alt me-2"></i>
+                        <span>01234567890</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span>info@panorama.com</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 مركز بانوراما للأشعة. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/custom.js"></script>
+    
+    <script>
+        // Load services on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadServicesGrid();
+        });
+
+        function loadServicesGrid() {
+            const sampleServices = [
+                {
+                    id: 1,
+                    name: "أشعة رنين مغناطيسي",
+                    description: "فحص الرنين المغناطيسي للدماغ والعمود الفقري والمفاصل. يستخدم أحدث التقنيات للحصول على صور عالية الدقة تساعد في تشخيص الأمراض بدقة عالية.",
+                    price: "800",
+                    category: "أشعة متقدمة",
+                    image: "assets/images/services/mri.jpg"
+                },
+                {
+                    id: 2,
+                    name: "أشعة مقطعية",
+                    description: "فحص الأشعة المقطعية للصدر والبطن والحوض. يوفر صوراً ثلاثية الأبعاد تساعد في تشخيص العديد من الأمراض.",
+                    price: "600",
+                    category: "أشعة متقدمة",
+                    image: "assets/images/services/ct.jpg"
+                },
+                {
+                    id: 3,
+                    name: "أشعة سينية",
+                    description: "أشعة سينية للصدر والعظام والمفاصل. فحص أساسي يساعد في تشخيص كسور العظام وأمراض الصدر.",
+                    price: "150",
+                    category: "أشعة أساسية",
+                    image: "assets/images/services/xray.jpg"
+                },
+                {
+                    id: 4,
+                    name: "أشعة إيكو",
+                    description: "فحص القلب والأوعية الدموية باستخدام الموجات فوق الصوتية. يساعد في تشخيص أمراض القلب.",
+                    price: "300",
+                    category: "أشعة أساسية",
+                    image: "assets/images/services/echo.jpg"
+                },
+                {
+                    id: 5,
+                    name: "أشعة بانوراما أسنان",
+                    description: "أشعة بانوراما للأسنان والفكين. فحص شامل للفم والأسنان يساعد في تشخيص مشاكل الأسنان.",
+                    price: "200",
+                    category: "أشعة أسنان",
+                    image: "assets/images/services/panorama.jpg"
+                },
+                {
+                    id: 6,
+                    name: "تحاليل طبية",
+                    description: "تحاليل الدم والبول والبراز. فحوصات مخبرية شاملة تساعد في تشخيص الأمراض.",
+                    price: "100",
+                    category: "تحاليل",
+                    image: "assets/images/services/lab.jpg"
+                }
+            ];
+
+            renderServices(sampleServices);
+        }
+
+        function renderServices(services) {
+            const container = document.getElementById('services-grid');
+            container.innerHTML = services.map(service => `
+                <div class="col-lg-4 col-md-6 service-item" data-category="${service.category}">
+                    <div class="card service-card h-100">
+                        <img src="${service.image}" class="card-img-top" alt="${service.name}" 
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">${service.name}</h5>
+                            <p class="card-text">${service.description}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-main fw-bold">${service.price} جنيه</span>
+                                <a href="service-detail.html?id=${service.id}" class="btn btn-outline-main">المزيد</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function() {
+            filterServices();
+        });
+
+        document.getElementById('category-filter').addEventListener('change', function() {
+            filterServices();
+        });
+
+        function filterServices() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const selectedCategory = document.getElementById('category-filter').value;
+            const serviceItems = document.querySelectorAll('.service-item');
+
+            serviceItems.forEach(item => {
+                const title = item.querySelector('.card-title').textContent.toLowerCase();
+                const description = item.querySelector('.card-text').textContent.toLowerCase();
+                const category = item.dataset.category;
+
+                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                const matchesCategory = !selectedCategory || category === selectedCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
